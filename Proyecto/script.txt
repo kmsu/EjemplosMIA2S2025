@@ -1,0 +1,2 @@
+mkdisk -Size=3000 -unit=K -path=/home/su-usuario/Documentos/EjemplosMIA2S2025/Proyecto/Discos/Disco1.mia
+mkdisk -Size=3000 -unit=K -path=/home/kevin/Documentos/EjemplosMIA2S2025/Proyecto/Discos/Disco1.mia

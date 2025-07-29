@@ -1,0 +1,2 @@
+1. Inicializar un ambiente para el proyecto con el comando
+    go mod init mi-proyecto (para este ejemplo use Proyecto)
