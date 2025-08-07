@@ -1,3 +1,4 @@
+// Operaciones con archivos binarios
 package Herramientas
 
 import (
@@ -5,7 +6,10 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
+
+// En Go cuando manejo en paquetes la funcion debe iniciar con mayuscula para poder ser exportada
 
 // funcion para crear un archivo binario
 func CrearDisco(path string) error {
@@ -48,6 +52,8 @@ func WriteObject(file *os.File, data interface{}, position int64) error {
 	return nil
 }
 
+//Se puede optimizar el codigo haciento que WriteObject no retorne nada, en su lugar que imprima el error y listo
+
 // Function to Read an object from a bin file
 func ReadObject(file *os.File, data interface{}, position int64) error {
 	file.Seek(position, 0)
@@ -57,4 +63,16 @@ func ReadObject(file *os.File, data interface{}, position int64) error {
 		return err
 	}
 	return nil
+}
+
+// para eliminar en el archivo una particion logica
+func DelPartL(size int32) []byte {
+	datos := make([]byte, size)
+	return datos
+}
+
+// probar la escritura de la particion logica
+func EscribirPartL(size int32) string {
+	cad := strings.Repeat("L", int(size))
+	return cad
 }

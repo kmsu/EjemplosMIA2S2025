@@ -29,7 +29,6 @@ func Mkdisk(parametros []string) {
 		//quito los espacios en blano despues de cada parametro
 		tmp2 := strings.TrimRight(parametro, " ")
 		//divido cada parametro entre nombre del parametro y su valor # -size=25 -> -size, 25
-
 		tmp := strings.Split(tmp2, "=")
 
 		//Si falta el valor del parametro actual lo reconoce como error e interrumpe el proceso
