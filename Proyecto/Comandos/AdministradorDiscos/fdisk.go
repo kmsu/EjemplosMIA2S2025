@@ -275,8 +275,9 @@ func primerAjuste(mbr Structs.MBR, typee string, sizeMBR int32, sizeNewPart int3
 						newPart = noPart
 						fmt.Println("FDISK Error. Espacio insuficiente")
 					}
-				}
-			}
+				} //else
+			} //else
+			//if
 		}
 		//Fin de 1 no existe
 
