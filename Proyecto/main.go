@@ -3,7 +3,9 @@ package main
 import (
 	Comandos "Proyecto/Comandos"
 	DM "Proyecto/Comandos/AdministradorDiscos" //DM -> DiskManagement (Administrador de discos)
+	FS "Proyecto/Comandos/SistemaDeArchivos"   //FS -> FileSystem (sistema de archivos)
 
+	//FS -> FileSystem (sistema de archivos)
 	"bufio"
 	"fmt"
 	"os"
@@ -75,7 +77,6 @@ func analizar(entrada string) {
 		} else {
 			fmt.Println("MKDISK ERROR: parametros no encontrados")
 		}
-		//--------------------------------------- FDISK ------------------------------------------------------------
 	} else if strings.ToLower(parametros[0]) == "fdisk" {
 		//FDISK
 		if len(parametros) > 1 {
@@ -89,6 +90,14 @@ func analizar(entrada string) {
 			DM.Mount(parametros)
 		} else {
 			fmt.Println("FDISK ERROR: parametros no encontrados")
+		}
+		//--------------------------------- SISTEMA DE ARCHIVOS ----------------------------------------------------
+	} else if strings.ToLower(parametros[0]) == "mkfs" {
+		//MKFS
+		if len(parametros) > 1 {
+			FS.Mkfs(parametros)
+		} else {
+			fmt.Println("MKFS ERROR: parametros no encontrados")
 		}
 		//--------------------------------------- OTROS ------------------------------------------------------------
 	} else if strings.ToLower(parametros[0]) == "rep" {

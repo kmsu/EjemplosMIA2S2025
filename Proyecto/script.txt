@@ -2,13 +2,13 @@
 
 #execute -path=script.txt
 
-mkdisk -Size=1 -unit=K -path=./Discos/Disco1.mia
-mkdisk -Size=1 -unit=K -path=./Discos/Disco2.mia
+mkdisk -Size=1 -unit=m -path=./Discos/Disco1.mia
+mkdisk -Size=1 -unit=m -path=./Discos/Disco2.mia
 
 fdisk -Size=100 -path=./Discos/Disco1.mia -name=Particion1 -unit=B
-fdisk -Size=200 -path=./Discos/Disco1.mia -name=Particion2 -unit=B
+fdisk -Size=200 -path=./Discos/Disco1.mia -name=Particion2 -unit=B -type=E
 fdisk -Size=300 -path=./Discos/Disco2.mia -name=Particion3 -unit=B
-fdisk -Size=259 -path=./Discos/Disco2.mia -name=Particion4 -unit=B
+fdisk -Size=2 -path=./Discos/Disco2.mia -name=Particion4 -unit=k
 
 mount -path=./Discos/Disco1.mia -name=Particion1
 mount -path=./Discos/Disco2.mia -name=Particion3
@@ -16,3 +16,4 @@ mount -path=./Discos/Disco2.mia -name=Particion3
 mount -path=./Discos/Disco1.mia -name=Particion2
 mount -path=./Discos/Disco2.mia -name=Particion4
 
+#mkfs -id=482B
