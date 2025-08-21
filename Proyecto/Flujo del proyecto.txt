@@ -1,0 +1,8 @@
+Flujo del proyecto
+0. analizador de comandos (main -> analizar)
+1. crear el/los discos (MKDISK)
+2. crear particiones (FDISK)
+3. montar particiones (MOUNT)
+4. Formatear (MKFS, crear el sistema de archivos)
+5. crear directorios/archivos (MKFILE/MKDIR)
+
