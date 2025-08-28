@@ -7,28 +7,14 @@ import (
 	"encoding/json"
 	"net/http"
 
-	//FS -> FileSystem (sistema de archivos)
 	"bufio"
 	"fmt"
 	"os"
 	"strings"
 
+	//instalar go get -u github.com/rs/cors en la raiz del proyecto
 	"github.com/rs/cors"
 )
-
-// Structs a utilizar
-type Entrada struct {
-	Text string `json:"text"`
-}
-
-type Salida struct {
-	Text string `json:"textsalida"`
-}
-
-type StatusResponse struct {
-	Message string `json:"message"`
-	Type    string `json:"type"`
-}
 
 /*func main() {
 	// MENSAJES DE INICIO
@@ -53,11 +39,28 @@ type StatusResponse struct {
 	}
 }*/
 
+// Structs a utilizar
+type Entrada struct {
+	Text string `json:"text"`
+}
+
+type Salida struct {
+	Text string `json:"textsalida"`
+}
+
+type StatusResponse struct {
+	Message string `json:"message"`
+	Type    string `json:"type"`
+}
+
 func main() {
 	//EndPoint
 	http.HandleFunc("/analizar", getCadenaAnalizar)
+
 	//Configurar CORS con opciones predeterminadas
+	//Permisos para enviar y recibir informacion
 	c := cors.Default()
+
 	//configurar el manejador HTTP con CORS
 	handler := c.Handler(http.DefaultServeMux)
 
@@ -67,13 +70,17 @@ func main() {
 }
 
 func getCadenaAnalizar(w http.ResponseWriter, r *http.Request) {
-	var respuesta string //Lo que va a retronar a la consola del front
+
 	// Configurar la cabecera de respuesta
 	w.Header().Set("Content-type", "application/json")
+
+	//cadena a retronar a la consola del front
+	var respuesta string
 
 	//Variables para enviar al front
 	var status StatusResponse
 	var salida Salida
+
 	//Verificar que sea un POST
 	if r.Method == http.MethodPost {
 		var entrada Entrada //struct que contendrá los datos enviados desde el cliente
@@ -123,9 +130,9 @@ func analizar(entrada string) string {
 
 	respuesta := ""
 
-	//Separar los parametros -size=3000 -path=ruta (obtenemos la lista: size=3000, path=ruta)
 	//Quitar espacios en blanco del final
 	tmp := strings.TrimRight(entrada, " ")
+	//Separar los parametros -size=3000 -path=ruta (obtenemos la lista: size=3000, path=ruta)
 	parametros := strings.Split(tmp, " -")
 
 	//analizamos los parametros
