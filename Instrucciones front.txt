@@ -1,0 +1,41 @@
+---------------------------------------------- shell de Linux -----------------------------------------------
+Instalar curl para posteriormente instalar node
+sudo apt update
+sudo apt install curl -y
+
+Descarga e instalar nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+
+En lugar de reiniciar la shell usar
+\. "$HOME/.nvm/nvm.sh"
+
+# Descarga e instala Node.js:
+nvm install 22
+
+# Verifica la versión de Node.js:
+node -v # Debería mostrar "v22.18.0".
+nvm current # Debería mostrar "v22.18.0".
+
+# Verifica versión de npm:
+npm -v # Debería mostrar "10.9.3".
+
+#Actualizar a una version mas reciente npm
+npm install -g npm@latest
+npm -v # Debería mostrar "11.5.2".
+
+NOTA: Si tuvieran una version antigua
+npm uninstall -g create-react-app
+
+-------------------------------------- bash VSCode ---------------------------------
+Crear el proyecto 
+npx create-react-app mi-app
+
+Instalar bootstrap (en el directorio de su proyecto react/front)
+npm install bootstrap
+
+En src/index.js 
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+Conexion a la API
+Del ejemplo Ejemplo 3
+go get github.com/rs/cors
