@@ -10,8 +10,9 @@ import (
 )
 
 // mkdisk -Size=3000 -unit=K -path=/home/user/Disco1.mia​
-func Mkdisk(parametros []string) {
+func Mkdisk(parametros []string) string {
 	fmt.Println("MKDISK")
+	salida := ""
 	//valida entrada de parametros del comando leido
 	//PARAMETROS: -size -unit -fit -path
 	var size int      //obligatorio
@@ -35,7 +36,8 @@ func Mkdisk(parametros []string) {
 		if len(tmp) != 2 {
 			fmt.Println("MKDISK Error: Valor desconocido del parametro ", tmp[0])
 			paramC = false
-			break //para finalizar el ciclo for con el error y no ejecutar lo que haga falta
+			//break //para finalizar el ciclo for con el error y no ejecutar lo que haga falta
+			return "Valor desconocido del parametro"
 		}
 
 		//en tmp valido que parametro viene en su primera posicion y que tenga un valor
@@ -48,11 +50,13 @@ func Mkdisk(parametros []string) {
 			if err != nil {
 				fmt.Println("MKDISK Error: -size debe ser un valor numerico. se leyo ", tmp[1])
 				paramC = false
-				break
+				return "MKDISK Error: -size debe ser un valor numerico. se leyo "
 			} else if size <= 0 { //se valida que sea mayor a 0 (positivo)
 				fmt.Println("MKDISK Error: -size debe ser un valor positivo mayor a cero (0). se leyo ", tmp[1])
 				paramC = false
-				break
+				//break
+				return "MKDISK Error: -size debe ser un valor positivo mayor a cero (0). se leyo "
+
 			}
 			//FIT
 		} else if strings.ToLower(tmp[0]) == "fit" {
@@ -115,6 +119,7 @@ func Mkdisk(parametros []string) {
 			file, err := Herramientas.OpenFile(path)
 			if err != nil {
 				fmt.Println("MKDISK Error:: ", err)
+				return "error"
 			}
 
 			// create array of byte(0)
@@ -122,6 +127,7 @@ func Mkdisk(parametros []string) {
 			newErr := Herramientas.WriteObject(file, datos, 0)
 			if newErr != nil {
 				fmt.Println("MKDISK Error: ", newErr)
+				return "error"
 			}
 
 			//obtener hora para el id
@@ -152,11 +158,13 @@ func Mkdisk(parametros []string) {
 			defer file.Close()
 
 			fmt.Println("\n Se creo el disco ", disco, " de forma exitosa")
+			salida = "Se creo el disco"
 
 			//imprimir el disco creado para validar que todo este correcto
 			var TempMBR Structs.MBR
 			if err := Herramientas.ReadObject(file, &TempMBR, 0); err != nil {
 				fmt.Println("MKDISK ERROR: No se leyó correctamente el disco")
+				return "error"
 			}
 			Structs.PrintMBR(TempMBR)
 
@@ -166,4 +174,5 @@ func Mkdisk(parametros []string) {
 			fmt.Println("MKDISK Error: Falta parametro -size o -path")
 		}
 	}
+	return salida
 }
