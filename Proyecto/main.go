@@ -4,6 +4,7 @@ import (
 	Comandos "Proyecto/Comandos"
 	DM "Proyecto/Comandos/AdministradorDiscos" //DM -> DiskManagement (Administrador de discos)
 	FS "Proyecto/Comandos/SistemaDeArchivos"   //FS -> FileSystem (sistema de archivos)
+	US "Proyecto/Comandos/Users"               //US -> UserS
 	"encoding/json"
 	"net/http"
 
@@ -168,12 +169,20 @@ func analizar(entrada string) string {
 		} else {
 			fmt.Println("MKFS ERROR: parametros no encontrados")
 		}
+		//--------------------------------------- USERS ------------------------------------------------------------
+	} else if strings.ToLower(parametros[0]) == "login" {
+		//LOGIN
+		if len(parametros) > 1 {
+			US.Login(parametros)
+		} else {
+			fmt.Println("LOGIN ERROR: parametros no encontrados")
+		}
 		//--------------------------------------- OTROS ------------------------------------------------------------
 	} else if strings.ToLower(parametros[0]) == "rep" {
 		//REP
 		if len(parametros) > 1 {
-			//Comandos.Rep(parametros)
-			Comandos.Rep()
+			Comandos.Rep(parametros)
+			//Comandos.Rep()
 		} else {
 			fmt.Println("REP ERROR: parametros no encontrados")
 		}

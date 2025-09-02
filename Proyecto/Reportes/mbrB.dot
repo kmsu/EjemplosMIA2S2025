@@ -1,0 +1,85 @@
+digraph { 
+node [ shape=none ] 
+TablaReportNodo [ label = < <table border="1"> 
+ <tr>
+  <td bgcolor='SlateBlue' COLSPAN="2"> Reporte MBR </td> 
+ </tr> 
+ <tr>
+  <td bgcolor='Azure'> mbr_tamano </td> 
+  <td bgcolor='Azure'> 1048576 </td> 
+ </tr> 
+ <tr>
+  <td bgcolor='#93e0d0ff'> mbr_fecha_creacion </td> 
+  <td bgcolor='#AFA1D1'> 01/09/2025 18:49 </td> 
+ </tr> 
+ <tr>
+  <td bgcolor='Azure'> mbr_disk_signature </td> 
+  <td bgcolor='Azure'> 5749 </td> 
+ </tr>  
+ <tr>
+  <td bgcolor='DeepSkyBlue' COLSPAN="2"> PARTICION </td> 
+ </tr> 
+ <tr>
+  <td bgcolor='Azure'> part_status </td> 
+  <td bgcolor='Azure'> A </td> 
+ </tr> 
+ <tr>
+  <td bgcolor='LightSkyBlue'> part_type </td> 
+  <td bgcolor='LightSkyBlue'> P </td> 
+ </tr> 
+ <tr>
+  <td bgcolor='Azure'> part_fit </td> 
+  <td bgcolor='Azure'> W </td> 
+ </tr> 
+ <tr>
+  <td bgcolor='LightSkyBlue'> part_start </td> 
+  <td bgcolor='LightSkyBlue'> 165 </td> 
+ </tr> 
+ <tr>
+  <td bgcolor='Azure'> part_size </td> 
+  <td bgcolor='Azure'> 300 </td> 
+ </tr> 
+ <tr>
+  <td bgcolor='LightSkyBlue'> part_name </td> 
+  <td bgcolor='LightSkyBlue'> Particion3 </td> 
+ </tr> 
+ <tr>
+  <td bgcolor='Azure'> part_id </td> 
+  <td bgcolor='Azure'> 483B </td> 
+ </tr> 
+ <tr>
+  <td bgcolor='DeepSkyBlue' COLSPAN="2"> PARTICION </td> 
+ </tr> 
+ <tr>
+  <td bgcolor='Azure'> part_status </td> 
+  <td bgcolor='Azure'> A </td> 
+ </tr> 
+ <tr>
+  <td bgcolor='LightSkyBlue'> part_type </td> 
+  <td bgcolor='LightSkyBlue'> P </td> 
+ </tr> 
+ <tr>
+  <td bgcolor='Azure'> part_fit </td> 
+  <td bgcolor='Azure'> W </td> 
+ </tr> 
+ <tr>
+  <td bgcolor='LightSkyBlue'> part_start </td> 
+  <td bgcolor='LightSkyBlue'> 465 </td> 
+ </tr> 
+ <tr>
+  <td bgcolor='Azure'> part_size </td> 
+  <td bgcolor='Azure'> 2048 </td> 
+ </tr> 
+ <tr>
+  <td bgcolor='LightSkyBlue'> part_name </td> 
+  <td bgcolor='LightSkyBlue'> Particion4 </td> 
+ </tr> 
+ <tr>
+  <td bgcolor='Azure'> part_id </td> 
+  <td bgcolor='Azure'> 484B </td> 
+ </tr> 
+ <tr>
+  <td bgcolor='#808080' COLSPAN="2"> ESPACIO LIBRE <br/> 1046063 bytes </td> 
+ </tr> 
+</table> > ]
+}
