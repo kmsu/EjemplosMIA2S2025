@@ -15,4 +15,4 @@ mkfs -type=full -id=481A
 
 login -user=root -pass=123 -id=481A 
 
-#mkdir -path=/bin
+mkdir -path=/bin

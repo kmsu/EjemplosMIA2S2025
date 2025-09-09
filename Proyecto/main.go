@@ -2,9 +2,10 @@ package main
 
 import (
 	Comandos "Proyecto/Comandos"
-	DM "Proyecto/Comandos/AdministradorDiscos" //DM -> DiskManagement (Administrador de discos)
-	FS "Proyecto/Comandos/SistemaDeArchivos"   //FS -> FileSystem (sistema de archivos)
-	US "Proyecto/Comandos/Users"               //US -> UserS
+	DFPM "Proyecto/Comandos/AdminPermisosPaths" //DFPM -> Directory, File, Permision Management (Administrador de carpetas, archivos y permisos)
+	DM "Proyecto/Comandos/AdministradorDiscos"  //DM -> DiskManagement (Administrador de discos)
+	FS "Proyecto/Comandos/SistemaDeArchivos"    //FS -> FileSystem (sistema de archivos)
+	US "Proyecto/Comandos/Users"                //US -> UserS
 	"encoding/json"
 	"net/http"
 
@@ -168,6 +169,13 @@ func analizar(entrada string) string {
 			FS.Mkfs(parametros)
 		} else {
 			fmt.Println("MKFS ERROR: parametros no encontrados")
+		}
+	} else if strings.ToLower(parametros[0]) == "mkdir" {
+		//MKDIR
+		if len(parametros) > 1 {
+			DFPM.Mkdir(parametros)
+		} else {
+			fmt.Println("MKDIR ERROR: parametros no encontrados")
 		}
 		//--------------------------------------- USERS ------------------------------------------------------------
 	} else if strings.ToLower(parametros[0]) == "login" {
