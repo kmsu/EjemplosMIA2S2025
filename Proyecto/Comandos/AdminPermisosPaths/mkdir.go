@@ -93,7 +93,7 @@ func Mkdir(parametros []string) {
 			idInicial := int32(0)
 			idActual := int32(0)
 			crear := -1
-			//   /home/nombre/nombre.txt
+			//   /home/nombre/estudiantes
 			// raiz = 0
 			for i, itemPath := range stepPath[1:] {
 				idActual = HerramientasInodos.BuscarInodo(idInicial, "/"+itemPath, superBloque, disco)
