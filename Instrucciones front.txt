@@ -39,3 +39,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 Conexion a la API
 Del ejemplo Ejemplo 3
 go get github.com/rs/cors
+
+para la navegacion entre paginas instalar en la carpeta del front
+npm i react-router-dom 

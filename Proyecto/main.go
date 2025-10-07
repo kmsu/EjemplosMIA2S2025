@@ -6,8 +6,11 @@ import (
 	DM "Proyecto/Comandos/AdministradorDiscos"  //DM -> DiskManagement (Administrador de discos)
 	FS "Proyecto/Comandos/SistemaDeArchivos"    //FS -> FileSystem (sistema de archivos)
 	US "Proyecto/Comandos/Users"                //US -> UserS
+	"Proyecto/Herramientas"
+	"Proyecto/Structs"
 	"encoding/json"
 	"net/http"
+	"path/filepath"
 
 	"bufio"
 	"fmt"
@@ -58,6 +61,8 @@ type StatusResponse struct {
 func main() {
 	//EndPoint
 	http.HandleFunc("/analizar", getCadenaAnalizar)
+	http.HandleFunc("/discos", getDiscos)
+	http.HandleFunc("/particiones", getParticiones)
 
 	//Configurar CORS con opciones predeterminadas
 	//Permisos para enviar y recibir informacion
@@ -239,3 +244,82 @@ func analizar(entrada string) string {
 
 	//--------------------------------- ADMINISTRADOR DE DISCOS ------------------------------------------------
 }*/
+
+func getDiscos(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("discos")
+	// Configurar la cabecera de respuesta
+	w.Header().Set("Content-Type", "application/json")
+
+	directorio := "./Discos"
+	//lista de discos encontrados
+	var discos []string
+
+	//recorrer el directorio y buscar discos
+	err := filepath.Walk(directorio, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() {
+			discos = append(discos, info.Name())
+		}
+		return nil
+	})
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error al buscar archivos: %s", err), http.StatusInternalServerError)
+	}
+
+	respuestaJSON, err := json.Marshal(discos)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error al serializar datos a JSON: %s", err), http.StatusInternalServerError)
+		return
+	}
+	w.Write(respuestaJSON)
+}
+
+func getParticiones(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Particiones")
+	// Configurar la cabecera de respuesta
+	w.Header().Set("Content-Type", "application/json")
+
+	var entrada string
+	if err := json.NewDecoder(r.Body).Decode(&entrada); err != nil {
+		http.Error(w, "Error al decodificar JSON", http.StatusBadRequest)
+		return
+	}
+
+	filepath := "./Discos/" + entrada
+
+	disco, err := Herramientas.OpenFile(filepath)
+	if err != nil {
+		fmt.Println("MOUNT Error: No se pudo leer el disco")
+		return
+	}
+
+	//Se crea un mbr para cargar el mbr del disco
+	var mbr Structs.MBR
+	//Guardo el mbr leido
+	if err := Herramientas.ReadObject(disco, &mbr, 0); err != nil {
+		return
+	}
+
+	// cerrar el archivo del disco
+	defer disco.Close()
+
+	//lista de discos encontrados
+	var particiones []string
+
+	for i := 0; i < 4; i++ {
+		estado := string(mbr.Partitions[i].Status[:])
+		if estado == "A" {
+			particiones = append(particiones, string(mbr.Partitions[i].Id[:]))
+		}
+	}
+
+	fmt.Println("Montadas ", particiones)
+	respuestaJSON, err := json.Marshal(particiones)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error al serializar datos a JSON: %s", err), http.StatusInternalServerError)
+		return
+	}
+	w.Write(respuestaJSON)
+}
