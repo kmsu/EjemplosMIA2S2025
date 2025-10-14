@@ -12,9 +12,11 @@ import (
 
 func Mkfs(entrada []string) {
 	var id string //obligatorio
+	fs := "2fs"   //2fs -> EXT2; 3fs -> EXT3; por defecto ext2
 	paramC := true
 	var pathDico string
 
+	//Verificar los parametros del mkfs
 	for _, parametro := range entrada[1:] {
 		tmp := strings.TrimRight(parametro, " ")
 		valores := strings.Split(tmp, "=")
@@ -24,8 +26,19 @@ func Mkfs(entrada []string) {
 			break
 		}
 
+		//ID
 		if strings.ToLower(valores[0]) == "id" {
 			id = strings.ToUpper(valores[1])
+			//FS
+		} else if strings.ToLower(valores[0]) == "fs" {
+			if strings.ToLower(valores[1]) == "3fs" {
+				fs = "3fs"
+			} else if strings.ToLower(valores[1]) != "2fs" {
+				fmt.Println("MKFS Error en -fs. Valores aceptados: 2fs o 3fs. ingreso: ", tmp[1])
+				paramC = false
+				break
+			}
+			//TYPE
 		} else if strings.ToLower(valores[0]) == "type" {
 			if strings.ToLower(valores[1]) != "full" {
 				fmt.Println("MKFS Error. Valor de -type desconocido")
@@ -93,6 +106,10 @@ func Mkfs(entrada []string) {
 				numerador := int(mbr.Partitions[i].Size) - binary.Size(Structs.Superblock{})
 				denominador := 4 + binary.Size(Structs.Inode{}) + 3*binary.Size(Structs.Fileblock{})
 
+				if fs == "3fs" {
+					denominador += binary.Size(Structs.Journaling{})
+				}
+
 				n := int32(numerador / denominador) //numero de inodos
 
 				//inicializar atributos generales del superbloque
@@ -113,7 +130,11 @@ func Mkfs(entrada []string) {
 				newSuperBloque.S_mnt_count += 1 //Se esta montando por primera vez
 				newSuperBloque.S_magic = 0xEF53
 
-				crearEXT2(n, mbr.Partitions[i], newSuperBloque, ahora.Format("02/01/2006 15:04"), file)
+				if fs == "2fs" {
+					crearEXT2(n, mbr.Partitions[i], newSuperBloque, ahora.Format("02/01/2006 15:04"), file)
+				} else {
+					crearEXT3(n, mbr.Partitions[i], newSuperBloque, ahora.Format("02/01/2006 15:04"), file)
+				}
 
 				//Fin del formateo
 				fmt.Println("Particion con id ", id, " formateada correctamente")
@@ -159,6 +180,8 @@ func crearEXT2(n int32, particion Structs.Partition, newSuperBloque Structs.Supe
 	//primer bloque libre
 	//newSuperBloque.S_first_blo = newSuperBloque.S_block_start + 2*int32(binary.Size(Structs.Fileblock{})) //multiplicar por 2 porque hay 2 bloques creados
 	newSuperBloque.S_first_blo = int32(2)
+
+	//Aqui agrego el journaling en EXT3
 
 	//limpio (formateo) el espacio del bitmap de inodos para evitar inconsistencias
 	bmInodeData := make([]byte, n)
@@ -263,6 +286,8 @@ func crearEXT2(n int32, particion Structs.Partition, newSuperBloque Structs.Supe
 	// Escribir el superbloque
 	Herramientas.WriteObject(file, newSuperBloque, int64(particion.Start))
 
+	// Aqui escribo el journaling en EXT3
+
 	//escribir el bitmap de inodos
 	Herramientas.WriteObject(file, byte(1), int64(newSuperBloque.S_bm_inode_start))
 	Herramientas.WriteObject(file, byte(1), int64(newSuperBloque.S_bm_inode_start+1)) //Se escribieron dos inode
@@ -283,4 +308,43 @@ func crearEXT2(n int32, particion Structs.Partition, newSuperBloque Structs.Supe
 	//bloque1
 	Herramientas.WriteObject(file, fileBlock1, int64(newSuperBloque.S_block_start+int32(binary.Size(Structs.Fileblock{}))))
 	// Fin crear EXT2
+}
+
+func crearEXT3(n int32, particion Structs.Partition, newSuperBloque Structs.Superblock, date string, file *os.File) {
+	fmt.Println("====== Crear EXT3 ======")
+	fmt.Println("N: ", n)
+	fmt.Println("Journaling: ", binary.Size(Structs.Journaling{}))
+	//completar los atributos del super bloque.
+	// La estructura de la particion formateada es:
+	// | Superbloque | Journaling | Bitmap Inodos | Bitmap Bloques | Inodos | Bloques |
+
+	//tipo del sistema de archivos
+	newSuperBloque.S_filesystem_type = 3 //2 -> EXT2; 3 -> EXT3
+	//Bitmap Inodos inicia donde termina el superbloque fisicamente (y el superbloque esta al inicio de la particion)
+	newSuperBloque.S_bm_inode_start = particion.Start + int32(binary.Size(Structs.Superblock{})) + int32(binary.Size(Structs.Journaling{}))
+
+	//Agregar los Demas atributos del superbloque faltantes que se hicieron en EXT2
+
+	//Creamos el journaling. Este sera la creacion de la raiz
+	var newJournal Structs.Journaling
+	newJournal.Ultimo = 0 // registra la ultima posicion usada del journaling
+	newJournal.Size = int32(binary.Size(Structs.Journaling{}))
+
+	//Crear el primer registro en la primer posicion del journal
+	dataJ := newJournal.Contenido[newJournal.Ultimo]
+	copy(dataJ.Operation[:], "mkdir")
+	copy(dataJ.Path[:], "/")
+	copy(dataJ.Content[:], "-")
+	copy(dataJ.Date[:], date)
+	newJournal.Contenido[0] = dataJ
+
+	//continuar con el formateo (formateo de bitmaps creacion de inodos y bloques iniciales, etc)
+
+	// Escribir el superbloque
+	Herramientas.WriteObject(file, newSuperBloque, int64(particion.Start))
+
+	//Escribir el Journaling
+	Herramientas.WriteObject(file, newJournal, int64(particion.Start+int32(binary.Size(Structs.Superblock{}))))
+
+	//Escribir el resto de estructuras creadas durante el formateo
 }

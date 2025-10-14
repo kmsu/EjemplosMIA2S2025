@@ -57,6 +57,9 @@ func Rep(parametros []string) {
 				mbr(path, id)
 			case "disk":
 				fmt.Println("reporte disk")
+			case "journaling":
+				fmt.Println("reporte journaling")
+				journal(path, id)
 			default:
 				fmt.Println("REP Error: Reporte ", name, " desconocido")
 			}
@@ -110,6 +113,58 @@ func mbr(path string, id string) {
 		cad += fmt.Sprintf(" <tr>\n  <td bgcolor='#93e0d0ff'> mbr_fecha_creacion </td> \n  <td bgcolor='#AFA1D1'> %s </td> \n </tr> \n", string(mbr.FechaC[:]))
 		cad += fmt.Sprintf(" <tr>\n  <td bgcolor='Azure'> mbr_disk_signature </td> \n  <td bgcolor='Azure'> %d </td> \n </tr>  \n", mbr.Id)
 		cad += Structs.RepGraphviz(mbr, file)
+		cad += "</table> > ]\n}"
+
+		//reporte requerido
+		carpeta := filepath.Dir(path)
+		rutaReporte := "." + carpeta + "/" + nombreReporte + ".dot"
+
+		Herramientas.RepGraphizMBR(rutaReporte, cad, nombreReporte)
+		fmt.Println(" Reporte MBR del disco " + disco + " creado exitosamente")
+	} else {
+		fmt.Println("REP Error: Id no existe")
+	}
+}
+
+func journal(path string, id string) {
+	var pathDico string
+	existe := false
+
+	//BUsca en struck de particiones montadas el id ingresado
+	for _, montado := range Structs.Montadas {
+		if montado.Id == id {
+			pathDico = montado.PathM
+			existe = true
+			break
+		}
+	}
+
+	//if true { //para probar los reporte hayan o no particiones montadas
+	if existe {
+		//Reporte
+		tmp := strings.Split(path, "/") // /dir1/dir2/reporte
+		nombreReporte := strings.Split(tmp[len(tmp)-1], ".")[0]
+
+		//Disco a reportar
+		tmp = strings.Split(pathDico, "/")
+		disco := strings.Split(tmp[len(tmp)-1], ".")[0]
+
+		file, err := Herramientas.OpenFile(pathDico)
+		if err != nil {
+			return
+		}
+
+		var mbr Structs.MBR
+		// Read object from bin file
+		if err := Herramientas.ReadObject(file, &mbr, 0); err != nil {
+			return
+		}
+
+		// Close bin file
+		defer file.Close()
+
+		cad := "digraph { \nnode [ shape=none ] \nTablaReportNodo [ label = < <table border=\"1\"> \n"
+		cad += Structs.RepJournal(mbr.Partitions[0], file)
 		cad += "</table> > ]\n}"
 
 		//reporte requerido

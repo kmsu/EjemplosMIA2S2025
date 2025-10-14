@@ -1,0 +1,15 @@
+#JOURNALING
+
+#CREACION DE DISCOS------------------------------------------------
+Mkdisk -size=20 -unit=m -path=./Discos/Disco1.mia
+
+#CREACION DE PARTICION------------------------------------------------
+fdisk -Size=7680 -path=./Discos/Disco1.mia -name=Part1 -unit=K -type=P -fit=BF
+
+#MOUNT------------------------------------------------
+mount -path=./Discos/Disco1.mia -name=Part1 #481A
+
+#CREACION DE SISTEMA DE ARCHIVOS------------------------------------------------
+mkfs -type=full -id=481A #-fs=3fs PARA EL EXT3 DESCOMENTAR ESTE PARAMETRO
+
+rep -id=481A -path=/Reportes/journal.jpg -name=journaling

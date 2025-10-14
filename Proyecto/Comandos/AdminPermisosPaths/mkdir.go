@@ -112,6 +112,9 @@ func Mkdir(parametros []string) {
 					if r {
 						for _, item := range stepPath[crear:] {
 							idInicial = HerramientasInodos.CrearCarpeta(idInicial, item, int64(mbr.Partitions[part].Start), disco)
+
+							//agregar la accion al journaling
+
 							if idInicial == 0 {
 								fmt.Println("MKDIR ERROR: No se pudo crear carpeta")
 								return
