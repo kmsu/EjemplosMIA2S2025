@@ -1,0 +1,26 @@
+#execute -path=archivosEntradaPrueba/reducir_aumentar.txt
+
+#******* TEORIA DE PARTICIONES *******
+
+#CREANDO DISCO
+Mkdisk -size=1 -unit=K -fit=FF -path=./Discos/Disco2.mia
+
+#CREACION DE PARTICIONES
+fdisk -type=P -unit=b -name=Part1 -size=100 -path=./Discos/Disco2.mia -fit=BF
+fdisk -type=P -unit=b -name=Part2 -size=100 -path=./Discos/Disco2.mia -fit=BF
+fdisk -type=P -unit=b -name=Part3 -size=100 -path=./Discos/Disco2.mia -fit=BF
+fdisk -type=P -unit=b -name=Part4 -size=559 -path=./Discos/Disco2.mia -fit=BF
+
+#ELIMINANDO PARTICIONES
+fdisk -delete=fast -name=Part1 -path=./Discos/Disco2.mia
+fdisk -delete=fast -name=Part3 -path=./Discos/Disco2.mia 
+
+#QUITANDO ESPACIO
+fdisk -add=-200 -size=10240 -unit=k -path=./Discos/Disco2.mia -name=Part4
+
+#CREACION DE PARTICIONES
+fdisk -type=P -unit=b -name=Part5 -size=100 -path=./Discos/Disco2.mia -fit=BF
+fdisk -type=P -unit=b -name=Part6 -size=100 -path=./Discos/Disco2.mia -fit=BF
+
+#REPORTE
+rep -id=A118 -path=./Reportes/diskB.jpg -name=disk
